@@ -1,13 +1,18 @@
-const caixaPrincipal = document.querySelector(".caixa-principal");
+import { aleatorio } from "./js/aleatorio.js";
+import { perguntas } from "./js/perguntas.js";
+
 const caixaPerguntas = document.querySelector(".caixa-perguntas");
 const caixaAlternativas = document.querySelector(".caixa-alternativas");
 const caixaResultado = document.querySelector(".caixa-resultado");
 const textoResultado = document.querySelector(".texto-resultado");
 const botaoJogarNovamente = document.querySelector(".novamente-btn");
-import {aleatorio} from './aleatorio.js';
-import {perguntas} from './perguntas.js';
+
+let atual = 0;
+let perguntaAtual;
+let historiaFinal = "";
 
 botaoJogarNovamente.addEventListener("click", jogaNovamente);
+mostraPergunta();
 
 function jogaNovamente() {
     atual = 0;
@@ -17,23 +22,20 @@ function jogaNovamente() {
     mostraPergunta();
 }
 
-let atual = 0; 
-let perguntaAtual;
-let historiaFinal = "";
-
 function mostraPergunta() {
-    if(atual >= perguntas.length){
+    if (atual >= perguntas.length) {
         mostraResultado();
         return;
     }
+
     perguntaAtual = perguntas[atual];
     caixaPerguntas.textContent = perguntaAtual.enunciado;
     caixaAlternativas.textContent = "";
     mostraAlternativas();
 }
 
-function mostraAlternativas(){
-    for(const alternativa of perguntaAtual.alternativas){
+function mostraAlternativas() {
+    for (const alternativa of perguntaAtual.alternativas) {
         const botaoAlternativas = document.createElement("button");
         botaoAlternativas.textContent = alternativa.texto;
         botaoAlternativas.addEventListener("click", () => respostaSelecionada(alternativa));
@@ -41,17 +43,15 @@ function mostraAlternativas(){
     }
 }
 
-function respostaSelecionada(opcaoSelecionada){
-    historiaFinal += aleatorio(opcaoSelecionada.afirmacao) + " ";
+function respostaSelecionada(opcaoSelecionada) {
+    historiaFinal += `${aleatorio(opcaoSelecionada.afirmacao)} `;
     atual++;
     mostraPergunta();
 }
 
 function mostraResultado() {
     caixaPerguntas.textContent = "Em 2049...";
-    textoResultado.textContent = historiaFinal;
+    textoResultado.textContent = historiaFinal.trim();
     caixaAlternativas.textContent = "";
     caixaResultado.classList.add("mostrar");
 }
-
-mostraPergunta();
