@@ -1,6 +1,8 @@
 import { aleatorio, nome } from "./js/aleatorio.js";
 import { perguntas } from "./js/perguntas.js";
 
+const botaoIniciar = document.querySelector(".iniciar-btn");
+const telaInicial = document.querySelector(".tela-inicial");
 const caixaPerguntas = document.querySelector(".caixa-perguntas");
 const caixaAlternativas = document.querySelector(".caixa-alternativas");
 const caixaResultado = document.querySelector(".caixa-resultado");
@@ -11,9 +13,20 @@ let atual = 0;
 let perguntaAtual;
 let historiaFinal = "";
 
+botaoIniciar.addEventListener('click', iniciaJogo);
 botaoJogarNovamente.addEventListener("click", jogaNovamente);
 substituiNome();
-mostraPergunta();
+
+function iniciaJogo() {
+    atual = 0;
+    historiaFinal = "";
+    textoResultado.textContent = "";
+    telaInicial.style.display = "none";
+    caixaResultado.classList.remove("mostrar");
+    caixaPerguntas.classList.add("mostrar");
+    caixaAlternativas.classList.add("mostrar");
+    mostraPergunta();
+}
 
 function mostraPergunta() {
     if (atual >= perguntas.length) {
@@ -39,18 +52,15 @@ function mostraAlternativas() {
 
 
 function respostaSelecionada(opcaoSelecionada) { 
-  const afirmacoes = aleatorio(opcaoSelecionada.afirmacao); 
-  historiaFinal += afirmacoes + " "; 
-  if (opcaoSelecionada.proxima !== undefined) { 
-    atual = opcaoSelecionada.proxima; 
-  } else { 
-    mostraResultado(); 
-    return; 
-  } 
-  mostraPergunta(); 
+    const afirmacao = aleatorio(opcaoSelecionada.afirmacao);
+    historiaFinal += `${afirmacao} `;
+    atual = opcaoSelecionada.proxima ?? atual + 1;
+    mostraPergunta();
 } 
 
 function mostraResultado() {
+    caixaPerguntas.classList.remove("mostrar");
+    caixaAlternativas.classList.remove("mostrar");
     caixaPerguntas.textContent = `Em 2049, ${nome}`;
     textoResultado.textContent = historiaFinal.trim();
     caixaAlternativas.textContent = "";
@@ -62,6 +72,8 @@ function jogaNovamente() {
     historiaFinal = "";
     textoResultado.textContent = "";
     caixaResultado.classList.remove("mostrar");
+    caixaPerguntas.classList.add("mostrar");
+    caixaAlternativas.classList.add("mostrar");
     mostraPergunta();
 }
 
